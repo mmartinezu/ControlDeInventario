@@ -39,8 +39,6 @@ public class FuncionariosYActivos extends javax.swing.JFrame {
                 public void onComplete(Response status) {//Respuesta del servicio
                     if (status.isSuccess()) {
                         try {
-                            JSONArray funcionariosArray = new JSONArray(status.getResult());
-
                             DefaultTableModel modeloTabla = new DefaultTableModel();
 
                             //Encabezado de la tabla
@@ -52,13 +50,14 @@ public class FuncionariosYActivos extends javax.swing.JFrame {
                             jtblFuncionarios.setModel(modeloTabla);
 
                             //Ciclo para añadir a la tabla los datos de todos los funcionarios
-                            for (int i = 0; i < funcionariosArray.length(); i++) {
+                            JSONObject funcionariosArray=new JSONObject(status.getResult());
+                            //Ciclo para añadir a la tabla los datos de todos los funcionarios
+                            for (int i = 0; ;i++) {
                                 Object[] obj = new Object[4];
-                                JSONObject funcionarioJSON = (JSONObject)funcionariosArray.get(i);
-                                obj[0] = funcionarioJSON.get("ID_FUN").toString();
-                                obj[1] = funcionarioJSON.get("NOM_FUN").toString();
-                                obj[2] = funcionarioJSON.get("APE_FUN").toString();
-                                obj[3] = funcionarioJSON.get("NUM_ACT_FUN").toString();
+                                obj[0]=funcionariosArray.getJSONObject(""+i+"").get("ID_FUN").toString();
+                                obj[1]=funcionariosArray.getJSONObject(""+i+"").get("NOM_FUN").toString();
+                                obj[2]=funcionariosArray.getJSONObject(""+i+"").get("APE_FUN").toString();
+                                obj[3]=funcionariosArray.getJSONObject(""+i+"").get("NUM_ACT_FUN").toString();
                                 modeloTabla.addRow(obj);
                             }
 
