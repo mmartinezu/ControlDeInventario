@@ -25,6 +25,11 @@ public class FuncionariosYActivos extends javax.swing.JFrame {
     public FuncionariosYActivos() {
         initComponents();
         cargarTabla();
+        this.setTitle("Funcionarios y activos");
+        this.setLocationRelativeTo(null);
+        this.setResizable(false);
+        jtblFuncionarios.getTableHeader().setReorderingAllowed(false);
+        jtblFuncionarios.getTableHeader().setResizingAllowed(false);
     }
 
     /**
@@ -50,14 +55,14 @@ public class FuncionariosYActivos extends javax.swing.JFrame {
                             jtblFuncionarios.setModel(modeloTabla);
 
                             //Ciclo para añadir a la tabla los datos de todos los funcionarios
-                            JSONObject funcionariosArray=new JSONObject(status.getResult());
+                            JSONObject funcionariosArray = new JSONObject(status.getResult());
                             //Ciclo para añadir a la tabla los datos de todos los funcionarios
-                            for (int i = 0; ;i++) {
+                            for (int i = 0;; i++) {
                                 Object[] obj = new Object[4];
-                                obj[0]=funcionariosArray.getJSONObject(""+i+"").get("ID_FUN").toString();
-                                obj[1]=funcionariosArray.getJSONObject(""+i+"").get("NOM_FUN").toString();
-                                obj[2]=funcionariosArray.getJSONObject(""+i+"").get("APE_FUN").toString();
-                                obj[3]=funcionariosArray.getJSONObject(""+i+"").get("NUM_ACT_FUN").toString();
+                                obj[0] = funcionariosArray.getJSONObject("" + i + "").get("ID_FUN").toString();
+                                obj[1] = funcionariosArray.getJSONObject("" + i + "").get("NOM_FUN").toString();
+                                obj[2] = funcionariosArray.getJSONObject("" + i + "").get("APE_FUN").toString();
+                                obj[3] = funcionariosArray.getJSONObject("" + i + "").get("NUM_ACT_FUN").toString();
                                 modeloTabla.addRow(obj);
                             }
 
@@ -82,10 +87,11 @@ public class FuncionariosYActivos extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jtblFuncionarios = new javax.swing.JTable();
         jbtnNuevo = new javax.swing.JButton();
+        jbtnCerrarSesion = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(225, 238, 236));
+        jPanel1.setBackground(new java.awt.Color(208, 223, 213));
 
         jLabel1.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
         jLabel1.setText("Funcionarios y Activos");
@@ -101,7 +107,19 @@ public class FuncionariosYActivos extends javax.swing.JFrame {
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jtblFuncionarios.setAlignmentX(1.0F);
+        jtblFuncionarios.setAlignmentY(1.0F);
+        jtblFuncionarios.setEditingColumn(0);
+        jtblFuncionarios.setEditingRow(0);
         jScrollPane1.setViewportView(jtblFuncionarios);
 
         jbtnNuevo.setFont(new java.awt.Font("Verdana", 0, 13)); // NOI18N
@@ -112,32 +130,45 @@ public class FuncionariosYActivos extends javax.swing.JFrame {
             }
         });
 
+        jbtnCerrarSesion.setFont(new java.awt.Font("Verdana", 0, 13)); // NOI18N
+        jbtnCerrarSesion.setText("Cerrar Sesión");
+        jbtnCerrarSesion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnCerrarSesionActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 473, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGap(423, 423, 423)
-                            .addComponent(jbtnNuevo))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGap(158, 158, 158)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(90, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(133, 133, 133)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(57, 57, 57)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jbtnCerrarSesion)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jbtnNuevo))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 473, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addGap(23, 23, 23)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
+                .addGap(26, 26, 26)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
-                .addComponent(jbtnNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41))
+                .addGap(28, 28, 28)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jbtnNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jbtnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -156,7 +187,17 @@ public class FuncionariosYActivos extends javax.swing.JFrame {
 
     private void jbtnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnNuevoActionPerformed
         // TODO add your handling code here:
+        CreacionProcesosValidacion nuevo = new CreacionProcesosValidacion();
+        this.dispose();
+        nuevo.setVisible(true);
     }//GEN-LAST:event_jbtnNuevoActionPerformed
+
+    private void jbtnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCerrarSesionActionPerformed
+        // TODO add your handling code here:
+        Login nuevo = new Login();
+        this.dispose();
+        nuevo.setVisible(true);
+    }//GEN-LAST:event_jbtnCerrarSesionActionPerformed
 
     /**
      * @param args the command line arguments
@@ -197,6 +238,7 @@ public class FuncionariosYActivos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton jbtnCerrarSesion;
     private javax.swing.JButton jbtnNuevo;
     private javax.swing.JTable jtblFuncionarios;
     // End of variables declaration//GEN-END:variables
