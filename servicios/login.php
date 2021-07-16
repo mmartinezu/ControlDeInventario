@@ -5,7 +5,7 @@ if (isset($_REQUEST['usuario']) && isset($_REQUEST['password'])){
     $usuario = $_REQUEST['usuario'];
     $password = $_REQUEST['password'];
 
-    $query = "SELECT * FROM USUARIOS WHERE user = '$usuario' AND pass_usu = '$password'";
+    $query = "SELECT * FROM USUARIOS WHERE ID_USU = '$usuario' AND CLA_USU = '$password'";
     $resultado = mysqli_query($conn, $query);
     $arreglo = array();
     while($fila = mysqli_fetch_assoc($resultado)){
