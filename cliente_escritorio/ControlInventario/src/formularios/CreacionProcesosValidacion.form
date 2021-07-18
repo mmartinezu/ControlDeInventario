@@ -141,6 +141,9 @@
               </StringArray>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jcbxProcesosItemStateChanged"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jlblFecha">
           <Properties>
@@ -176,7 +179,10 @@
                                   <Component id="jtxtFecha" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
-                              <Component id="jbtnNuevo" min="-2" pref="88" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="jbtnNuevo" pref="88" max="32767" attributes="0"/>
+                                  <Component id="jbtnCrear" max="32767" attributes="0"/>
+                              </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
@@ -201,6 +207,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                           <Component id="jtxtFecha" min="-2" max="-2" attributes="0"/>
+                          <Component id="jbtnCrear" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -261,6 +268,14 @@
               </SubComponents>
             </Container>
             <Component class="com.toedter.calendar.JDateChooser" name="jtxtFecha">
+            </Component>
+            <Component class="javax.swing.JButton" name="jbtnCrear">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Crear"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnCrearActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
