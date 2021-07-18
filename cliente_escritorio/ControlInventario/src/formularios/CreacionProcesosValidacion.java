@@ -6,6 +6,14 @@
 
 package formularios;
 
+import comMdf.devazt.networking.HttpClient;
+import comMdf.devazt.networking.OnHttpRequestComplete;
+import comMdf.devazt.networking.Response;
+import javax.swing.DefaultListModel;
+import javax.swing.table.DefaultTableModel;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  *
  * @author DELL
@@ -21,18 +29,61 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         bloqueoProceso();
+        cargarEmpleados();
+        cargarProcesos();
     }
 
     private void bloqueoProceso(){
         jtxtNombre.setEnabled(false);
         jtxtFecha.setEnabled(false);
-        jList1.setEnabled(false);
+        jlistEmpleados.setEnabled(false);
     }
     
     private void desbloqueoProceso(){
         jtxtNombre.setEnabled(true);
         jtxtFecha.setEnabled(true);
-        jList1.setEnabled(true);
+        jlistEmpleados.setEnabled(true);
+    }
+    
+    public void cargarEmpleados(){
+        try {
+            HttpClient cliente = new HttpClient(new OnHttpRequestComplete() {
+                @Override
+                public void onComplete(Response status) {//Respuesta del servicio
+                    if (status.isSuccess()) {
+                        try {
+                            DefaultListModel modeloLista = new DefaultListModel();
+
+                            jlistEmpleados.setModel(modeloLista);
+
+                            //Ciclo para añadir a la tabla los datos de todos los funcionarios
+                            JSONObject funcionariosArray = new JSONObject(status.getResult());
+                            
+                            String nomApe;
+                            //Ciclo para añadir a la tabla los datos de todos los funcionarios
+                            for (int i = 0;; i++) {
+                                Object[] obj = new Object[2];
+                                obj[0] = funcionariosArray.getJSONObject("" + i + "").get("NOM_FUN").toString();
+                                obj[1] = funcionariosArray.getJSONObject("" + i + "").get("APE_FUN").toString();
+                                nomApe = (String) obj[0]+" "+obj[1];
+                                modeloLista.addElement(nomApe);
+                            }
+
+                        } catch (JSONException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                }
+            });
+            cliente.excecute("http://localhost/servicios/cargarFuncionarios.php");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+    }
+    
+    public void cargarProcesos(){
+    
     }
     
     /**
@@ -57,7 +108,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        jlistEmpleados = new javax.swing.JList();
         jtxtFecha = new com.toedter.calendar.JDateChooser();
         jbtnRegresar = new javax.swing.JButton();
 
@@ -102,12 +153,12 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
 
         jLabel5.setText("Empleados:");
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
+        jlistEmpleados.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane2.setViewportView(jList1);
+        jScrollPane2.setViewportView(jlistEmpleados);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -169,14 +220,14 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(61, 61, 61)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 518, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jcbxProcesos, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jlblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 518, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jcbxProcesos, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jlblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(54, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -270,7 +321,6 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JList jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -279,6 +329,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
     private javax.swing.JButton jbtnRegresar;
     private javax.swing.JComboBox jcbxProcesos;
     private javax.swing.JLabel jlblFecha;
+    private javax.swing.JList jlistEmpleados;
     private javax.swing.JTable jtblFuncionarios;
     private com.toedter.calendar.JDateChooser jtxtFecha;
     private javax.swing.JTextField jtxtNombre;
