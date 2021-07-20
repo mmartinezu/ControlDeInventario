@@ -469,10 +469,11 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
     
     
     private void crearProceso(String titulo, String fechaTexto, String idFuncionarios) {
-        
         String titulo2="";
         if(titulo.contains(" "))
-        titulo2 = titulo.replace(" ", "%20");
+            titulo2 = titulo.replace(" ", "%20");
+        else
+            titulo2 = titulo;
         try {
             HttpClient cliente = new HttpClient(new OnHttpRequestComplete() {
                 @Override
