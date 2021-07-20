@@ -8,13 +8,16 @@ package formularios;
 import comMdf.devazt.networking.HttpClient;
 import comMdf.devazt.networking.OnHttpRequestComplete;
 import comMdf.devazt.networking.Response;
-import java.awt.List;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import modelos.Funcionario;
+import modelos.FuncionarioDAO;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,6 +26,9 @@ import org.json.JSONObject;
  * @author DELL
  */
 public class CreacionProcesosValidacion extends javax.swing.JFrame {
+
+    FuncionarioDAO fun = new FuncionarioDAO();
+    List<Funcionario> funcionarios = fun.listarFuncionarios();
 
     /**
      * Creates new form CreacionProcesosValidacion
@@ -33,7 +39,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         bloqueoProceso();
-        cargarEmpleados();
+        cargarJlistFuncionarios();
         cargarProcesos();
     }
 
@@ -48,44 +54,17 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         jtxtFecha.setEnabled(true);
         jlistEmpleados.setEnabled(true);
     }
-
-    public void cargarEmpleados() {
-        try {
-            HttpClient cliente = new HttpClient(new OnHttpRequestComplete() {
-                @Override
-                public void onComplete(Response status) {//Respuesta del servicio
-                    if (status.isSuccess()) {
-                        try {
-                            DefaultListModel modeloLista = new DefaultListModel();
-
-                            jlistEmpleados.setModel(modeloLista);
-
-                            //Ciclo para añadir a la tabla los datos de todos los funcionarios
-                            JSONObject funcionariosArray = new JSONObject(status.getResult());
-
-                            String nomApe;
-                            //Ciclo para añadir a la tabla los datos de todos los funcionarios
-                            for (int i = 0;; i++) {
-                                Object[] obj = new Object[2];
-                                obj[0] = funcionariosArray.getJSONObject("" + i + "").get("NOM_FUN").toString();
-                                obj[1] = funcionariosArray.getJSONObject("" + i + "").get("APE_FUN").toString();
-                                nomApe = (String) obj[0] + " " + obj[1];
-                                modeloLista.addElement(nomApe);
-                            }
-
-                        } catch (JSONException e) {
-                            System.out.println(e.getMessage());
-                        }
-                    }
-                }
-            });
-            cliente.excecute("http://localhost/servicios/cargarFuncionarios.php");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+    
+    public void cargarJlistFuncionarios(){
+        DefaultListModel modeloLista = new DefaultListModel();
+        jlistEmpleados.setModel(modeloLista);
+        
+        for(Funcionario f: funcionarios){
+            modeloLista.addElement(f);
         }
-
+        
     }
-
+    
     public void cargarProcesos() {
         try {
             HttpClient cliente = new HttpClient(new OnHttpRequestComplete() {
@@ -338,18 +317,27 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
 
     private void jbtnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCrearActionPerformed
         // TODO add your handling code here:
+        String titulo = this.jtxtNombre.getText();
+        
         Date fecha = jtxtFecha.getDate();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String fechaTexto = formatter.format(fecha);
-        ArrayList <String> empleados = new ArrayList();
-        empleados.add(jlistEmpleados.getSelectionModel().toString());
-        System.out.println(empleados);
-        //crearProceso(jtxtNombre.getText(), fechaTexto, );
+        
+        Funcionario funcionarioSeleccionado =null;
+
+        int[] selectedIx = this.jlistEmpleados.getSelectedIndices();
+        String[] idFuncionarios = new String[selectedIx.length];
+        for (int i = 0; i < selectedIx.length; i++) {
+            funcionarioSeleccionado = (Funcionario) jlistEmpleados.getModel().getElementAt(selectedIx[i]);
+            idFuncionarios [i] = funcionarioSeleccionado.getId();
+            System.out.println(idFuncionarios[i]);
+        }
+        String funcionarios = recorrerFuncionarios(idFuncionarios);
+        crearProceso(titulo, fechaTexto, funcionarios);
+        
     }//GEN-LAST:event_jbtnCrearActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -476,5 +464,43 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    
+    
+    private void crearProceso(String titulo, String fechaTexto, String idFuncionarios) {
+        try {
+            HttpClient cliente = new HttpClient(new OnHttpRequestComplete() {
+                @Override
+                public void onComplete(Response status) {
+                    if (status.equals("El proceso se creo correctamente")) {
+                        System.out.println("Creado");
+                    }
+                }
+                
+            });
+            cliente.excecute("http://localhost/servicios/nuevoProcesoControl.php?titulo=" +titulo + "&" + idFuncionarios +"fecha="+fechaTexto) ;
+            JOptionPane.showMessageDialog(null, "Proceso creado exitosamente.");
+            actualizarProceso();
+            this.jcbxProcesos.setSelectedItem(titulo);
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+        }
+    }
+
+    private String recorrerFuncionarios(String[] idFuncionarios) {
+        String url = ""; 
+        System.out.println(idFuncionarios.length);
+        for(int i = 0; i < idFuncionarios.length; i++){
+            System.out.println(url);
+            url += "funcionarios[" +  i + "]=" + idFuncionarios[i] + "&";
+        }
+        System.out.println(url);
+        return url;
+    }
+
+    private void actualizarProceso() {
+        bloqueoProceso();
+        cargarProcesos();
     }
 }
