@@ -220,6 +220,7 @@ public class Login extends javax.swing.JFrame {
                                 }
                             } catch (JSONException e) {
                                 JOptionPane.showMessageDialog(null, "!Usuario o contraseña incorrecta");
+                                jtxtPassword.setText("");
                             }
 
                         }
