@@ -8,5 +8,6 @@ package modelos;
 import java.util.List;
 
 public interface Crud {
-    List<Funcionario> listarFuncionarios();
+    List <Funcionario> listarFuncionarios();
+    
 }
