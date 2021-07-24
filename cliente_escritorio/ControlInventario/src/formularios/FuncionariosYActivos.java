@@ -1,21 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package formularios;
-
-import comMdf.devazt.networking.HttpClient;
-import comMdf.devazt.networking.OnHttpRequestComplete;
-import comMdf.devazt.networking.Response;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import modelos.Funcionario;
 import modelos.FuncionarioDAO;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 /**
  *
  * @author Usuario
@@ -201,6 +188,14 @@ public class FuncionariosYActivos extends javax.swing.JFrame {
 
     private void jtblFuncionariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtblFuncionariosMouseClicked
         // TODO add your handling code here:
+        int fila = this.jtblFuncionarios.rowAtPoint(evt.getPoint());
+        
+        /*txtCed.setText(tblEstudiantes.getValueAt(fila, 0).toString());
+        txtNombre.setText(tblEstudiantes.getValueAt(fila, 1).toString());
+        txtApellido.setText(tblEstudiantes.getValueAt(fila, 2).toString());
+        txtDireccion.setText(tblEstudiantes.getValueAt(fila, 3).toString());
+        txtTelefono.setText(tblEstudiantes.getValueAt(fila, 4).toString());*/
+        
     }//GEN-LAST:event_jtblFuncionariosMouseClicked
 
     /**
