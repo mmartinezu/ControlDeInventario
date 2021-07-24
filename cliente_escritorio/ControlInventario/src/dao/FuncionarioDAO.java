@@ -3,13 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package modelos;
+package dao;
 
 import comMdf.devazt.networking.HttpClient;
 import comMdf.devazt.networking.OnHttpRequestComplete;
 import comMdf.devazt.networking.Response;
 import java.util.ArrayList;
 import java.util.List;
+import modelos.Activo;
+import modelos.Crud;
+import modelos.Funcionario;
 import org.json.JSONException;
 import org.json.JSONObject;
 

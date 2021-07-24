@@ -2,7 +2,7 @@ package formularios;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import modelos.Funcionario;
-import modelos.FuncionarioDAO;
+import dao.FuncionarioDAO;
 /**
  *
  * @author Usuario

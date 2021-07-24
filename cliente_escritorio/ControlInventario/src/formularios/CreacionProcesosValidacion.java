@@ -17,7 +17,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelos.Funcionario;
-import modelos.FuncionarioDAO;
+import dao.FuncionarioDAO;
 import org.json.JSONException;
 import org.json.JSONObject;
 

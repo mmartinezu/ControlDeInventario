@@ -5,6 +5,7 @@
  */
 package modelos;
 
+import dao.ActivoDAO;
 import java.util.List;
 
 /**
