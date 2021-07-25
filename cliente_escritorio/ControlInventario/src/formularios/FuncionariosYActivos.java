@@ -1,14 +1,27 @@
 package formularios;
+import dao.ActivoDAO;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import modelos.Funcionario;
 import dao.FuncionarioDAO;
+import modelos.Activo;
 /**
  *
  * @author Usuario
  */
 public class FuncionariosYActivos extends javax.swing.JFrame {
 
+    public String idFuncionario;
+
+    public String getIdFuncionario() {
+        return idFuncionario;
+    }
+
+    public void setIdFuncionario(String idFuncionario) {
+        this.idFuncionario = idFuncionario;
+    }
+    
+    
     /**
      * Creates new form FuncionariosYActivos
      */
@@ -189,13 +202,10 @@ public class FuncionariosYActivos extends javax.swing.JFrame {
     private void jtblFuncionariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtblFuncionariosMouseClicked
         // TODO add your handling code here:
         int fila = this.jtblFuncionarios.rowAtPoint(evt.getPoint());
-        
-        /*txtCed.setText(tblEstudiantes.getValueAt(fila, 0).toString());
-        txtNombre.setText(tblEstudiantes.getValueAt(fila, 1).toString());
-        txtApellido.setText(tblEstudiantes.getValueAt(fila, 2).toString());
-        txtDireccion.setText(tblEstudiantes.getValueAt(fila, 3).toString());
-        txtTelefono.setText(tblEstudiantes.getValueAt(fila, 4).toString());*/
-        
+        idFuncionario = this.jtblFuncionarios.getValueAt(fila, 0).toString();
+        Activos ventana = new Activos();
+        ventana.mostrarActivos(idFuncionario);
+        ventana.setVisible(true);
     }//GEN-LAST:event_jtblFuncionariosMouseClicked
 
     /**

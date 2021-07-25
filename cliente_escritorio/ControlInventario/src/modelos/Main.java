@@ -6,6 +6,7 @@
 package modelos;
 
 import dao.ActivoDAO;
+import formularios.Activos;
 import java.util.List;
 
 /**
