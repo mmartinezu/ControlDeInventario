@@ -4,6 +4,7 @@ import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import modelos.Funcionario;
 import dao.FuncionarioDAO;
+import javax.swing.JOptionPane;
 import modelos.Activo;
 /**
  *
@@ -203,10 +204,16 @@ public class FuncionariosYActivos extends javax.swing.JFrame {
         // TODO add your handling code here:
         int fila = this.jtblFuncionarios.rowAtPoint(evt.getPoint());
         idFuncionario = this.jtblFuncionarios.getValueAt(fila, 0).toString();
-        String nombreFuncionario = this.jtblFuncionarios.getValueAt(fila, 1).toString() + " " +
+        int numActivos = Integer.valueOf(this.jtblFuncionarios.getValueAt(fila,3).toString());
+        if (numActivos > 0) {
+            String nombreFuncionario = this.jtblFuncionarios.getValueAt(fila, 1).toString() + " " +
                 this.jtblFuncionarios.getValueAt(fila, 2).toString();
-        Activos ventana = new Activos(this ,true, idFuncionario, nombreFuncionario);
-        ventana.setVisible(true);
+             Activos ventana = new Activos(this ,true, idFuncionario, nombreFuncionario);
+            ventana.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "El funcionario no dispone de activos" ,"Mensaje", JOptionPane.WARNING_MESSAGE);
+        }
+        
     }//GEN-LAST:event_jtblFuncionariosMouseClicked
 
     /**
