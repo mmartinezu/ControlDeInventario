@@ -5,6 +5,7 @@
  */
 package formularios;
 
+import com.toedter.calendar.JDateChooser;
 import comMdf.devazt.networking.HttpClient;
 import comMdf.devazt.networking.OnHttpRequestComplete;
 import comMdf.devazt.networking.Response;
@@ -29,6 +30,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
 
     FuncionarioDAO fun = new FuncionarioDAO();
     List<Funcionario> funcionarios = fun.listarFuncionarios();
+    int log = 0;
 
     /**
      * Creates new form CreacionProcesosValidacion
@@ -41,6 +43,12 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         bloqueoProceso();
         cargarJlistFuncionarios();
         cargarProcesos();
+        botonesInicio();
+    }
+    
+    private void botonesInicio(){
+        jbtnCrear.setEnabled(false);
+        jbtnActualizar.setEnabled(false);
     }
 
     private void bloqueoProceso() {
@@ -49,22 +57,34 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         jlistEmpleados.setEnabled(false);
     }
 
-    private void desbloqueoProceso() {
+    private void camposEditarProceso() {
+        jbtnCrear.setEnabled(false);
+        jbtnActualizar.setEnabled(true);
+        jtxtNombre.setText(jcbxProcesos.getSelectedItem().toString());
         jtxtNombre.setEnabled(true);
         jtxtFecha.setEnabled(true);
         jlistEmpleados.setEnabled(true);
     }
-    
-    public void cargarJlistFuncionarios(){
+
+    private void camposCrearProceso() {
+        jbtnCrear.setEnabled(true);
+        jbtnActualizar.setEnabled(false);
+        jtxtNombre.setText("");
+        jtxtNombre.setEnabled(true);
+        jtxtFecha.setEnabled(true);
+        jlistEmpleados.setEnabled(true);
+    }
+
+    public void cargarJlistFuncionarios() {
         DefaultListModel modeloLista = new DefaultListModel();
         jlistEmpleados.setModel(modeloLista);
-        
-        for(Funcionario f: funcionarios){
+
+        for (Funcionario f : funcionarios) {
             modeloLista.addElement(f);
         }
-        
+
     }
-    
+
     public void cargarProcesos() {
         try {
             HttpClient cliente = new HttpClient(new OnHttpRequestComplete() {
@@ -78,14 +98,13 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
 
                             //Ciclo para añadir a la tabla los datos de todos los funcionarios
                             JSONObject funcionariosArray = new JSONObject(status.getResult());
-
+                            jcbxProcesos.addItem("");
                             //Ciclo para añadir a la tabla los datos de todos los funcionarios
                             for (int i = 0;; i++) {
                                 Object[] obj = new Object[2];
                                 obj[0] = funcionariosArray.getJSONObject("" + i + "").get("TIT_PRO").toString();
                                 modeloCBX.addElement(obj[0]);
                             }
-
                         } catch (JSONException e) {
                             System.out.println(e.getMessage());
                         }
@@ -96,6 +115,26 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+
+    }
+
+    public void cargarEditar() {
+        camposEditarProceso();
+    }
+
+    public boolean comprobarCamposLlenos() {
+        if (jtxtNombre.getText().equals("")) {
+            return false;
+        }    
+        if (jtxtFecha.equals("")) {
+            return false;
+        }
+        int[] selectedIx = this.jlistEmpleados.getSelectedIndices();
+        if (selectedIx.length <= 0) {
+            JOptionPane.showMessageDialog(this, "No se puede crear un proceso sin funcionarios", "Mensaje", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -123,6 +162,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         jlistEmpleados = new javax.swing.JList();
         jtxtFecha = new com.toedter.calendar.JDateChooser();
         jbtnCrear = new javax.swing.JButton();
+        jbtnActualizar = new javax.swing.JButton();
         jbtnRegresar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -153,7 +193,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
             }
         });
 
-        jlblFecha.setText("jLabel2");
+        jlblFecha.setText("Fecha: ");
 
         jPanel2.setBackground(new java.awt.Color(208, 223, 213));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Nuevo Proceso"));
@@ -185,6 +225,13 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
             }
         });
 
+        jbtnActualizar.setText("Actualizar");
+        jbtnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnActualizarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -199,15 +246,17 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
                         .addGap(35, 35, 35)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jtxtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
-                            .addComponent(jtxtFecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(29, 29, 29)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jbtnNuevo, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
-                            .addComponent(jbtnCrear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(jtxtFecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(29, 29, 29)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jbtnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jbtnNuevo, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                        .addComponent(jbtnCrear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -226,7 +275,8 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jbtnActualizar))
                 .addContainerGap())
         );
 
@@ -256,7 +306,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
                                 .addComponent(jcbxProcesos, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jlblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jbtnRegresar)
@@ -298,7 +348,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
 
     private void jbtnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnNuevoActionPerformed
         // TODO add your handling code here:
-        desbloqueoProceso();
+        camposCrearProceso();
     }//GEN-LAST:event_jbtnNuevoActionPerformed
 
     private void jbtnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnRegresarActionPerformed
@@ -313,30 +363,40 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         // TODO add your handling code here:
         cargarFecha(jcbxProcesos.getSelectedItem().toString());
         cargarTabla(jcbxProcesos.getSelectedItem().toString());
+        if (log > 0) {
+            cargarEditar();
+        }
+        log++;
     }//GEN-LAST:event_jcbxProcesosItemStateChanged
 
     private void jbtnCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCrearActionPerformed
         // TODO add your handling code here:
-        String titulo = this.jtxtNombre.getText();
-        
-        Date fecha = jtxtFecha.getDate();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        String fechaTexto = formatter.format(fecha);
-        
-        Funcionario funcionarioSeleccionado =null;
+        if (!comprobarCamposLlenos()) {
+            JOptionPane.showMessageDialog(this, "Revise los campos de su proceso", "Mensaje", JOptionPane.WARNING_MESSAGE);
+        } else {
+            String titulo = this.jtxtNombre.getText();
 
-        int[] selectedIx = this.jlistEmpleados.getSelectedIndices();
-        String[] idFuncionarios = new String[selectedIx.length];
-        for (int i = 0; i < selectedIx.length; i++) {
-            funcionarioSeleccionado = (Funcionario) jlistEmpleados.getModel().getElementAt(selectedIx[i]);
-            idFuncionarios [i] = funcionarioSeleccionado.getId();
-            System.out.println(idFuncionarios[i]);
+            Date fecha = jtxtFecha.getDate();
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            String fechaTexto = formatter.format(fecha);
+
+            Funcionario funcionarioSeleccionado = null;
+
+            int[] selectedIx = this.jlistEmpleados.getSelectedIndices();
+            String[] idFuncionarios = new String[selectedIx.length];
+            for (int i = 0; i < selectedIx.length; i++) {
+                funcionarioSeleccionado = (Funcionario) jlistEmpleados.getModel().getElementAt(selectedIx[i]);
+                idFuncionarios[i] = funcionarioSeleccionado.getId();
+                System.out.println(idFuncionarios[i]);
+            }
+            String funcionarios = recorrerFuncionarios(idFuncionarios);
+            crearProceso(titulo, fechaTexto, funcionarios);
         }
-        String funcionarios = recorrerFuncionarios(idFuncionarios);
-        crearProceso(titulo, fechaTexto, funcionarios);
-        
     }//GEN-LAST:event_jbtnCrearActionPerformed
 
+    private void jbtnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnActualizarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jbtnActualizarActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -379,6 +439,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton jbtnActualizar;
     private javax.swing.JButton jbtnCrear;
     private javax.swing.JButton jbtnNuevo;
     private javax.swing.JButton jbtnRegresar;
@@ -391,8 +452,9 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void cargarFecha(String urlString) {
-        if(urlString.contains(" "))
-        urlString = urlString.replace(" ", "%20");
+        if (urlString.contains(" ")) {
+            urlString = urlString.replace(" ", "%20");
+        }
         try {
             HttpClient cliente = new HttpClient(new OnHttpRequestComplete() {
                 @Override
@@ -404,9 +466,9 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
                             JSONObject funcionariosArray = new JSONObject(status.getResult());
 
                             //Ciclo para añadir a la tabla los datos de todos los funcionarios
-                                String obj = new String();
-                                obj = funcionariosArray.getJSONObject("0").get("FEC_PRO").toString();
-                                jlblFecha.setText(obj);
+                            String obj = new String();
+                            obj = funcionariosArray.getJSONObject("0").get("FEC_PRO").toString();
+                            jlblFecha.setText(obj);
 
                         } catch (JSONException e) {
                             System.out.println(e.getMessage());
@@ -414,15 +476,16 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
                     }
                 }
             });
-            cliente.excecute("http://localhost/servicios/cargarFechasDeProcesos.php?titulo="+ urlString);
+            cliente.excecute("http://localhost/servicios/cargarFechasDeProcesos.php?titulo=" + urlString);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
-    
+
     public void cargarTabla(String string) {
-        if(string.contains(" "))
-        string = string.replace(" ", "%20");
+        if (string.contains(" ")) {
+            string = string.replace(" ", "%20");
+        }
         try {
             HttpClient cliente = new HttpClient(new OnHttpRequestComplete() {
                 @Override
@@ -438,7 +501,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
                             modeloTabla.addColumn("Estado");
 
                             jtblFuncionarios.setModel(modeloTabla);
-                            
+
                             String nomApe;
 
                             //Ciclo para añadir a la tabla los datos de todos los funcionarios
@@ -447,8 +510,8 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
                             for (int i = 0;; i++) {
                                 Object[] obj = new Object[4];
                                 obj[0] = funcionariosArray.getJSONObject("" + i + "").get("ID_PRO_DET").toString();
-                                obj[1] = funcionariosArray.getJSONObject("" + i + "").get("NOM_FUN").toString() + " " +
-                                        funcionariosArray.getJSONObject("" + i + "").get("APE_FUN").toString();
+                                obj[1] = funcionariosArray.getJSONObject("" + i + "").get("NOM_FUN").toString() + " "
+                                        + funcionariosArray.getJSONObject("" + i + "").get("APE_FUN").toString();
                                 obj[2] = funcionariosArray.getJSONObject("" + i + "").get("NUM_ACT_FUN").toString();
                                 obj[3] = funcionariosArray.getJSONObject("" + i + "").get("EST_PRO").toString();
                                 modeloTabla.addRow(obj);
@@ -460,20 +523,19 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
                     }
                 }
             });
-            cliente.excecute("http://localhost/servicios/cargarDetalleProceso.php?titulo="+string);
+            cliente.excecute("http://localhost/servicios/cargarDetalleProceso.php?titulo=" + string);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
-    
-    
     private void crearProceso(String titulo, String fechaTexto, String idFuncionarios) {
-        String titulo2="";
-        if(titulo.contains(" "))
+        String titulo2 = "";
+        if (titulo.contains(" ")) {
             titulo2 = titulo.replace(" ", "%20");
-        else
+        } else {
             titulo2 = titulo;
+        }
         try {
             HttpClient cliente = new HttpClient(new OnHttpRequestComplete() {
                 @Override
@@ -482,9 +544,9 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
                         System.out.println("Creado");
                     }
                 }
-                
+
             });
-            cliente.excecute("http://localhost/servicios/nuevoProcesoControl.php?titulo=" +titulo2 + "&" + idFuncionarios +"fecha="+fechaTexto) ;
+            cliente.excecute("http://localhost/servicios/nuevoProcesoControl.php?titulo=" + titulo2 + "&" + idFuncionarios + "fecha=" + fechaTexto);
             JOptionPane.showMessageDialog(null, "Proceso creado exitosamente.");
             actualizarProceso();
             this.jcbxProcesos.setSelectedItem(titulo);
@@ -494,11 +556,11 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
     }
 
     private String recorrerFuncionarios(String[] idFuncionarios) {
-        String url = ""; 
+        String url = "";
         System.out.println(idFuncionarios.length);
-        for(int i = 0; i < idFuncionarios.length; i++){
+        for (int i = 0; i < idFuncionarios.length; i++) {
             System.out.println(url);
-            url += "funcionarios[" +  i + "]=" + idFuncionarios[i] + "&";
+            url += "funcionarios[" + i + "]=" + idFuncionarios[i] + "&";
         }
         System.out.println(url);
         return url;
@@ -509,5 +571,6 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         jtxtFecha.setToolTipText("");
         bloqueoProceso();
         cargarProcesos();
+        cargarJlistFuncionarios();
     }
 }
