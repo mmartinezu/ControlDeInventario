@@ -203,8 +203,9 @@ public class FuncionariosYActivos extends javax.swing.JFrame {
         // TODO add your handling code here:
         int fila = this.jtblFuncionarios.rowAtPoint(evt.getPoint());
         idFuncionario = this.jtblFuncionarios.getValueAt(fila, 0).toString();
-        Activos ventana = new Activos();
-        ventana.mostrarActivos(idFuncionario);
+        String nombreFuncionario = this.jtblFuncionarios.getValueAt(fila, 1).toString() + " " +
+                this.jtblFuncionarios.getValueAt(fila, 2).toString();
+        ActivosF ventana = new ActivosF(this ,true, idFuncionario, nombreFuncionario);
         ventana.setVisible(true);
     }//GEN-LAST:event_jtblFuncionariosMouseClicked
 
