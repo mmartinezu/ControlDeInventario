@@ -272,6 +272,10 @@
               </SubComponents>
             </Container>
             <Component class="com.toedter.calendar.JDateChooser" name="jtxtFecha">
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jtxtFechaMouseClicked"/>
+                <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="jtxtFechaPropertyChange"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="jbtnCrear">
               <Properties>

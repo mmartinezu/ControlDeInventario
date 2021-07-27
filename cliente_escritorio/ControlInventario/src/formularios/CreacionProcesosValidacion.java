@@ -44,6 +44,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         cargarJlistFuncionarios();
         cargarProcesos();
         botonesInicio();
+        jtxtFecha.setDate(new Date());
     }
     
     private void botonesInicio(){
@@ -61,8 +62,8 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         jbtnCrear.setEnabled(false);
         jbtnActualizar.setEnabled(true);
         jtxtNombre.setText(jcbxProcesos.getSelectedItem().toString());
-        jtxtNombre.setEnabled(true);
-        jtxtFecha.setEnabled(true);
+        jtxtNombre.setEnabled(false);
+        jtxtFecha.setEnabled(false);
         jlistEmpleados.setEnabled(true);
     }
 
@@ -72,6 +73,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         jtxtNombre.setText("");
         jtxtNombre.setEnabled(true);
         jtxtFecha.setEnabled(true);
+        jtxtFecha.setDate(new Date());
         jlistEmpleados.setEnabled(true);
     }
 
@@ -217,6 +219,17 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
             public Object getElementAt(int i) { return strings[i]; }
         });
         jScrollPane2.setViewportView(jlistEmpleados);
+
+        jtxtFecha.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtxtFechaMouseClicked(evt);
+            }
+        });
+        jtxtFecha.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jtxtFechaPropertyChange(evt);
+            }
+        });
 
         jbtnCrear.setText("Crear");
         jbtnCrear.addActionListener(new java.awt.event.ActionListener() {
@@ -377,7 +390,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
             String titulo = this.jtxtNombre.getText();
 
             Date fecha = jtxtFecha.getDate();
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat formatter = new SimpleDateFormat("MMM-dd-yyyy");
             String fechaTexto = formatter.format(fecha);
 
             Funcionario funcionarioSeleccionado = null;
@@ -397,6 +410,16 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
     private void jbtnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnActualizarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jbtnActualizarActionPerformed
+
+    private void jtxtFechaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtxtFechaMouseClicked
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jtxtFechaMouseClicked
+
+    private void jtxtFechaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jtxtFechaPropertyChange
+        // TODO add your handling code here:
+        System.out.println(jtxtFecha.getDate());
+    }//GEN-LAST:event_jtxtFechaPropertyChange
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -469,6 +492,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
                             String obj = new String();
                             obj = funcionariosArray.getJSONObject("0").get("FEC_PRO").toString();
                             jlblFecha.setText(obj);
+                            jtxtFecha.setDate(new Date(obj));
 
                         } catch (JSONException e) {
                             System.out.println(e.getMessage());
@@ -548,7 +572,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
             });
             cliente.excecute("http://localhost/servicios/nuevoProcesoControl.php?titulo=" + titulo2 + "&" + idFuncionarios + "fecha=" + fechaTexto);
             JOptionPane.showMessageDialog(null, "Proceso creado exitosamente.");
-            actualizarProceso();
+            ProcesoCreado();
             this.jcbxProcesos.setSelectedItem(titulo);
         } catch (Exception ex) {
             System.out.println(ex.toString());
@@ -566,7 +590,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         return url;
     }
 
-    private void actualizarProceso() {
+    private void ProcesoCreado() {
         jtxtNombre.setText("");
         jtxtFecha.setToolTipText("");
         bloqueoProceso();
