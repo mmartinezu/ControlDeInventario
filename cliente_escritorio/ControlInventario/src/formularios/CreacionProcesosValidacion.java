@@ -31,6 +31,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
     FuncionarioDAO fun = new FuncionarioDAO();
     List<Funcionario> funcionarios = fun.listarFuncionarios();
     int log = 0;
+    String idProceso="";
 
     /**
      * Creates new form CreacionProcesosValidacion
@@ -131,6 +132,16 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         if (jtxtFecha.equals("")) {
             return false;
         }
+        int[] selectedIx = this.jlistEmpleados.getSelectedIndices();
+        if (selectedIx.length <= 0) {
+            JOptionPane.showMessageDialog(this, "No se puede crear un proceso sin funcionarios", "Mensaje", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean comprobarCamposLlenosActualizar() {
+        
         int[] selectedIx = this.jlistEmpleados.getSelectedIndices();
         if (selectedIx.length <= 0) {
             JOptionPane.showMessageDialog(this, "No se puede crear un proceso sin funcionarios", "Mensaje", JOptionPane.WARNING_MESSAGE);
@@ -409,6 +420,24 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
 
     private void jbtnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnActualizarActionPerformed
         // TODO add your handling code here:
+        if (!comprobarCamposLlenosActualizar()) {
+            JOptionPane.showMessageDialog(this, "Revise los campos de su proceso", "Mensaje", JOptionPane.WARNING_MESSAGE);
+        } else {
+            String titulo = this.jtxtNombre.getText();
+
+            Funcionario funcionarioSeleccionado = null;
+
+            int[] selectedIx = this.jlistEmpleados.getSelectedIndices();
+            String[] idFuncionarios = new String[selectedIx.length];
+            for (int i = 0; i < selectedIx.length; i++) {
+                funcionarioSeleccionado = (Funcionario) jlistEmpleados.getModel().getElementAt(selectedIx[i]);
+                idFuncionarios[i] = funcionarioSeleccionado.getId();
+                System.out.println(idFuncionarios[i]);
+            }
+            cargarIdProceso(titulo);
+            String funcionarios = recorrerFuncionarios(idFuncionarios);
+            actualizarProceso(idProceso, titulo, funcionarios);
+        }
     }//GEN-LAST:event_jbtnActualizarActionPerformed
 
     private void jtxtFechaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtxtFechaMouseClicked
@@ -474,6 +503,62 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
     private javax.swing.JTextField jtxtNombre;
     // End of variables declaration//GEN-END:variables
 
+    
+    private void actualizarProceso(String id, String titulo, String idFuncionarios){
+        
+        try {
+            HttpClient cliente = new HttpClient(new OnHttpRequestComplete() {
+                @Override
+                public void onComplete(Response status) {
+                    if (status.equals("Actualizado correctamente")) {
+                        System.out.println("Actualizado");
+                    }
+                }
+
+            });
+            cliente.excecute("http://localhost/servicios/updateProcesoValidacion.php?"+ idFuncionarios + "id="+id);
+            JOptionPane.showMessageDialog(null, "Proceso actualizado exitosamente.");
+            ProcesoCreado();
+            this.jcbxProcesos.setSelectedItem(titulo);
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+        }
+        
+    }
+    
+    private void cargarIdProceso(String urlString) {
+        
+        if (urlString.contains(" ")) {
+            urlString = urlString.replace(" ", "%20");
+        }
+        try {
+            HttpClient cliente = new HttpClient(new OnHttpRequestComplete() {
+                @Override
+                public void onComplete(Response status) {//Respuesta del servicio
+                    if (status.isSuccess()) {
+                        try {
+
+                            //Ciclo para añadir a la tabla los datos de todos los funcionarios
+                            JSONObject funcionariosArray = new JSONObject(status.getResult());
+
+                            //Ciclo para añadir a la tabla los datos de todos los funcionarios
+                            String obj = new String();
+                            obj = funcionariosArray.getJSONObject("0").get("ID_PRO").toString();
+                            idProceso=obj;
+                            
+                        } catch (JSONException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                }
+            });
+            cliente.excecute("http://localhost/servicios/cargarIdProcesos.php?titulo=" + urlString);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+    }
+    
     private void cargarFecha(String urlString) {
         if (urlString.contains(" ")) {
             urlString = urlString.replace(" ", "%20");
