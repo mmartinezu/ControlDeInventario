@@ -441,7 +441,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
             for (int i = 0; i < selectedIx.length; i++) {
                 funcionarioSeleccionado = (Funcionario) jlistEmpleados.getModel().getElementAt(selectedIx[i]);
                 idFuncionarios[i] = funcionarioSeleccionado.getId();
-                System.out.println(idFuncionarios[i]);
+                //System.out.println(idFuncionarios[i]);
             }
             String funcionarios = recorrerFuncionarios(idFuncionarios);
             crearProceso(titulo, fechaTexto, funcionarios);
@@ -462,7 +462,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
             for (int i = 0; i < selectedIx.length; i++) {
                 funcionarioSeleccionado = (Funcionario) jlistEmpleados.getModel().getElementAt(selectedIx[i]);
                 idFuncionarios[i] = funcionarioSeleccionado.getId();
-                System.out.println(idFuncionarios[i]);
+                //System.out.println(idFuncionarios[i]);
             }
             cargarIdProceso(titulo);
             String funcionarios = recorrerFuncionarios(idFuncionarios);
@@ -477,7 +477,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
 
     private void jtxtFechaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jtxtFechaPropertyChange
         // TODO add your handling code here:
-        System.out.println(jtxtFecha.getDate());
+        //System.out.println(jtxtFecha.getDate());
     }//GEN-LAST:event_jtxtFechaPropertyChange
 
     public static void main(String args[]) {
@@ -695,12 +695,12 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
 
     private String recorrerFuncionarios(String[] idFuncionarios) {
         String url = "";
-        System.out.println(idFuncionarios.length);
+        //System.out.println(idFuncionarios.length);
         for (int i = 0; i < idFuncionarios.length; i++) {
-            System.out.println(url);
+            //System.out.println(url);
             url += "funcionarios[" + i + "]=" + idFuncionarios[i] + "&";
         }
-        System.out.println(url);
+        //System.out.println(url);
         return url;
     }
 

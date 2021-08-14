@@ -30,7 +30,6 @@ public class FuncionarioDAO implements Crud{
             public void onComplete(Response status) {
                 if(status.isSuccess()){
                     try{
-                    System.out.println(status.getResult()); 
                     JSONObject funcionariosArray = new JSONObject(status.getResult());
                     for (int i = 0;; i++) {
                         Object[] obj=new Object[4];
