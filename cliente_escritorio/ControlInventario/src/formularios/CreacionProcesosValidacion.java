@@ -30,8 +30,9 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
 
     FuncionarioDAO fun = new FuncionarioDAO();
     List<Funcionario> funcionarios = fun.listarFuncionarios();
+    DefaultListModel modeloLista = new DefaultListModel();
     int log = 0;
-    String idProceso="";
+    String idProceso = "";
 
     /**
      * Creates new form CreacionProcesosValidacion
@@ -47,8 +48,8 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         botonesInicio();
         jtxtFecha.setDate(new Date());
     }
-    
-    private void botonesInicio(){
+
+    private void botonesInicio() {
         jbtnCrear.setEnabled(false);
         jbtnActualizar.setEnabled(false);
     }
@@ -79,7 +80,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
     }
 
     public void cargarJlistFuncionarios() {
-        DefaultListModel modeloLista = new DefaultListModel();
+
         jlistEmpleados.setModel(modeloLista);
 
         for (Funcionario f : funcionarios) {
@@ -123,12 +124,41 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
 
     public void cargarEditar() {
         camposEditarProceso();
+
+        List<Integer> seleccionados = new ArrayList<>();
+        int agregar = 0;
+        int filas = jtblFuncionarios.getRowCount();
+        if (filas > 0) {
+            for (int i = 0; i < filas; i++) {
+                agregar = buscarLista(jtblFuncionarios.getValueAt(i, 1).toString());
+                if (agregar != -1) {
+                    seleccionados.add(agregar);
+                }
+            }
+            int[] indices = new int[seleccionados.size()];
+            for (int j = 0; j < seleccionados.size(); j++) {
+                indices[j] = seleccionados.get(j);
+            }
+            jlistEmpleados.setSelectedIndices(indices);
+        }
+
+    }
+
+    public int buscarLista(String nombreTabla) {
+        int lista = modeloLista.getSize();
+
+        for (int i = 0; i < lista; i++) {
+            if (modeloLista.getElementAt(i).toString().equals(nombreTabla)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public boolean comprobarCamposLlenos() {
         if (jtxtNombre.getText().equals("")) {
             return false;
-        }    
+        }
         if (jtxtFecha.equals("")) {
             return false;
         }
@@ -139,9 +169,9 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         }
         return true;
     }
-    
+
     public boolean comprobarCamposLlenosActualizar() {
-        
+
         int[] selectedIx = this.jlistEmpleados.getSelectedIndices();
         if (selectedIx.length <= 0) {
             JOptionPane.showMessageDialog(this, "No se puede crear un proceso sin funcionarios", "Mensaje", JOptionPane.WARNING_MESSAGE);
@@ -442,7 +472,7 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
 
     private void jtxtFechaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtxtFechaMouseClicked
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_jtxtFechaMouseClicked
 
     private void jtxtFechaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jtxtFechaPropertyChange
@@ -503,9 +533,8 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
     private javax.swing.JTextField jtxtNombre;
     // End of variables declaration//GEN-END:variables
 
-    
-    private void actualizarProceso(String id, String titulo, String idFuncionarios){
-        
+    private void actualizarProceso(String id, String titulo, String idFuncionarios) {
+
         try {
             HttpClient cliente = new HttpClient(new OnHttpRequestComplete() {
                 @Override
@@ -516,18 +545,18 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
                 }
 
             });
-            cliente.excecute("http://localhost/servicios/updateProcesoValidacion.php?"+ idFuncionarios + "id="+id);
+            cliente.excecute("http://localhost/servicios/updateProcesoValidacion.php?" + idFuncionarios + "id=" + id);
             JOptionPane.showMessageDialog(null, "Proceso actualizado exitosamente.");
             ProcesoCreado();
             this.jcbxProcesos.setSelectedItem(titulo);
         } catch (Exception ex) {
             System.out.println(ex.toString());
         }
-        
+
     }
-    
+
     private void cargarIdProceso(String urlString) {
-        
+
         if (urlString.contains(" ")) {
             urlString = urlString.replace(" ", "%20");
         }
@@ -544,8 +573,8 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
                             //Ciclo para añadir a la tabla los datos de todos los funcionarios
                             String obj = new String();
                             obj = funcionariosArray.getJSONObject("0").get("ID_PRO").toString();
-                            idProceso=obj;
-                            
+                            idProceso = obj;
+
                         } catch (JSONException e) {
                             System.out.println(e.getMessage());
                         }
@@ -556,9 +585,9 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        
+
     }
-    
+
     private void cargarFecha(String urlString) {
         if (urlString.contains(" ")) {
             urlString = urlString.replace(" ", "%20");
@@ -680,6 +709,5 @@ public class CreacionProcesosValidacion extends javax.swing.JFrame {
         jtxtFecha.setToolTipText("");
         bloqueoProceso();
         cargarProcesos();
-        cargarJlistFuncionarios();
     }
 }
