@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-07-2021 a las 04:06:26
+-- Tiempo de generación: 16-08-2021 a las 02:37:28
 -- Versión del servidor: 10.4.16-MariaDB
 -- Versión de PHP: 7.4.12
 
@@ -45,17 +45,34 @@ CREATE TABLE `activos` (
   `NOM_ACT` varchar(20) NOT NULL,
   `EST_ACT` varchar(20) NOT NULL,
   `COD_BAR_ACT` varchar(30) NOT NULL,
-  `ID_FUN_PER` varchar(10) NOT NULL
+  `ID_FUN_PER` varchar(10) NOT NULL,
+  `REV_ACT` varchar(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `activos`
 --
 
-INSERT INTO `activos` (`ID_ACT`, `NOM_ACT`, `EST_ACT`, `COD_BAR_ACT`, `ID_FUN_PER`) VALUES
-('ACT001', 'Refrigerador', 'Nuevo', '123456789', '1802'),
-('ACT002', 'Television', 'Seminuevo', '987654321', '1802'),
-('ACT003', 'Plancha', 'Nuevo', '123789456', '1803');
+INSERT INTO `activos` (`ID_ACT`, `NOM_ACT`, `EST_ACT`, `COD_BAR_ACT`, `ID_FUN_PER`, `REV_ACT`) VALUES
+('ACT001', 'Refrigerador', 'Nuevo', '5901234123457', '1802', 'N'),
+('ACT002', 'Television', 'Seminuevo', '123456789012', '1802', 'N'),
+('ACT003', 'Plancha', 'Nuevo', '1234567890128', '1803', 'N'),
+('ACT004', 'Radio', 'Nuevo', '4070071967072', '1803', 'N'),
+('ACT005', 'Sillon', 'Seminuevo', '8414533043847', '1804', 'N'),
+('ACT006', 'Laptop', 'Nuevo', '7501234567893', '1804', 'N'),
+('ACT007', 'Impresora', 'Seminuevo', '51000012517', '1803', 'N');
+
+--
+-- Disparadores `activos`
+--
+DELIMITER $$
+CREATE TRIGGER `actualizarNumActivos` AFTER INSERT ON `activos` FOR EACH ROW BEGIN 
+    UPDATE FUNCIONARIOS
+    SET NUM_ACT_FUN = NUM_ACT_FUN + 1 
+    WHERE ID_FUN = NEW.ID_FUN_PER;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -75,8 +92,9 @@ CREATE TABLE `funcionarios` (
 --
 
 INSERT INTO `funcionarios` (`ID_FUN`, `NOM_FUN`, `APE_FUN`, `NUM_ACT_FUN`) VALUES
-('1802', 'John', 'Arcos', 10),
-('1803', 'Maria', 'Vargas', 5);
+('1802', 'John', 'Arcos', 2),
+('1803', 'Maria', 'Vargas', 3),
+('1804', 'Marco', 'Perez', 2);
 
 -- --------------------------------------------------------
 
@@ -88,7 +106,7 @@ CREATE TABLE `procesosdetail` (
   `ID_PRO_DET` int(255) NOT NULL,
   `ID_FUN_PER` varchar(10) NOT NULL,
   `ID_PRO_PER` int(100) NOT NULL,
-  `OBS_REV` varchar(50) NOT NULL,
+  `OBS_REV` varchar(300) NOT NULL,
   `EST_PRO` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -97,10 +115,9 @@ CREATE TABLE `procesosdetail` (
 --
 
 INSERT INTO `procesosdetail` (`ID_PRO_DET`, `ID_FUN_PER`, `ID_PRO_PER`, `OBS_REV`, `EST_PRO`) VALUES
-(1, '1802', 1, 'NULL', 'REVISAR'),
-(2, '1803', 2, 'NULL', 'REVISAR'),
-(88, '1802', 3, 'NULL', 'REVISAR'),
-(89, '1803', 3, 'NULL', 'REVISAR');
+(197, '1802', 1, 'NULL', 'REVISAR'),
+(198, '1804', 1, 'NULL', 'REVISAR'),
+(199, '1803', 2, '', 'FINALIZADO');
 
 -- --------------------------------------------------------
 
@@ -110,7 +127,7 @@ INSERT INTO `procesosdetail` (`ID_PRO_DET`, `ID_FUN_PER`, `ID_PRO_PER`, `OBS_REV
 
 CREATE TABLE `procesosheader` (
   `ID_PRO` int(100) NOT NULL,
-  `TIT_PRO` varchar(20) NOT NULL,
+  `TIT_PRO` varchar(60) NOT NULL,
   `FEC_PRO` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -119,9 +136,8 @@ CREATE TABLE `procesosheader` (
 --
 
 INSERT INTO `procesosheader` (`ID_PRO`, `TIT_PRO`, `FEC_PRO`) VALUES
-(1, 'Revision Inicio Año', '05/12/2020'),
-(2, 'Revision fin de año', '05/02/2020'),
-(3, 'Proceso 2021', '11/07/2021');
+(1, 'Proceso 2021 area ventas', 'jul-08-2021'),
+(2, 'Proceso 2021 area contable', 'ago-12-2021');
 
 -- --------------------------------------------------------
 
@@ -141,7 +157,8 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`ID_USU`, `NOM_USU`, `APE_USU`, `CLA_USU`) VALUES
-('1805776208', 'Mateo', 'Martinez', 'mmmm');
+('1805776208', 'Mateo', 'Martinez', 'mmmm'),
+('1808', 'Mateo', 'Martinez', '1efcfaab69');
 
 --
 -- Índices para tablas volcadas
@@ -183,7 +200,7 @@ ALTER TABLE `procesosheader`
 -- AUTO_INCREMENT de la tabla `procesosdetail`
 --
 ALTER TABLE `procesosdetail`
-  MODIFY `ID_PRO_DET` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
+  MODIFY `ID_PRO_DET` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=200;
 
 --
 -- Restricciones para tablas volcadas
